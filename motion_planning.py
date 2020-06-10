@@ -124,9 +124,11 @@ class MotionPlanning(Drone):
         with open('colliders.csv', newline='') as f:
             reader = csv.reader(f)
             row1 = next(reader)  # gets the first line
+        f.close()
 
         lat0 = float(row1[0].split()[1])
         lon0 = float(row1[1].split()[1])
+        print(lat0, lon0)
 
         # TODO: set home position to (lon0, lat0, 0)
         self.set_home_position(lon0, lat0, 0)
@@ -151,7 +153,7 @@ class MotionPlanning(Drone):
         grid_start = (int(self.local_position[0] - north_offset), int(self.local_position[1] - east_offset))
 
         # Set goal as some arbitrary position on the grid
-        grid_goal = (-north_offset + 10, -east_offset + 10)
+        grid_goal = (-north_offset + 50, -east_offset + 50)
         # TODO: adapt to set goal as latitude / longitude position and convert
         north_random_distance = random.randint(-abs(north_offset), abs(north_offset))
         east_random_distance = random.randint(-abs(east_offset), abs(east_offset))
