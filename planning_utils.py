@@ -45,7 +45,6 @@ def create_grid(data, drone_altitude, safety_distance):
 class Action(Enum):
     """
     An action is represented by a 3 element tuple.
-
     The first 2 values are the delta of the action relative
     to the current grid position. The third and final value
     is the cost of performing the action.
@@ -55,6 +54,10 @@ class Action(Enum):
     EAST = (0, 1, 1)
     NORTH = (-1, 0, 1)
     SOUTH = (1, 0, 1)
+    NORTH_WEST = (-1, -1, np.sqrt(2))
+    NORTH_EAST = (-1, 1, np.sqrt(2))
+    SOUTH_WEST = (1, -1, np.sqrt(2))
+    SOUTH_EAST = (1, 1, np.sqrt(2))
 
     @property
     def cost(self):
@@ -63,7 +66,6 @@ class Action(Enum):
     @property
     def delta(self):
         return (self.value[0], self.value[1])
-
 
 def valid_actions(grid, current_node):
     """
@@ -89,7 +91,6 @@ def valid_actions(grid, current_node):
 
 
 def a_star(grid, h, start, goal):
-
     path = []
     path_cost = 0
     queue = PriorityQueue()
@@ -98,16 +99,16 @@ def a_star(grid, h, start, goal):
 
     branch = {}
     found = False
-    
+
     while not queue.empty():
         item = queue.get()
         current_node = item[1]
         if current_node == start:
             current_cost = 0.0
-        else:              
+        else:
             current_cost = branch[current_node][0]
-            
-        if current_node == goal:        
+
+        if current_node == goal:
             print('Found a path.')
             found = True
             break
@@ -118,12 +119,12 @@ def a_star(grid, h, start, goal):
                 next_node = (current_node[0] + da[0], current_node[1] + da[1])
                 branch_cost = current_cost + action.cost
                 queue_cost = branch_cost + h(next_node, goal)
-                
-                if next_node not in visited:                
-                    visited.add(next_node)               
+
+                if next_node not in visited:
+                    visited.add(next_node)
                     branch[next_node] = (branch_cost, current_node, action)
                     queue.put((queue_cost, next_node))
-             
+
     if found:
         # retrace steps
         n = goal
@@ -136,7 +137,7 @@ def a_star(grid, h, start, goal):
     else:
         print('**********************')
         print('Failed to find a path!')
-        print('**********************') 
+        print('**********************')
     return path[::-1], path_cost
 
 
@@ -144,8 +145,17 @@ def a_star(grid, h, start, goal):
 def heuristic(position, goal_position):
     return np.linalg.norm(np.array(position) - np.array(goal_position))
 
+### PATH SHORTENINNG SECTION ###
+
+epsilon = 5
+
 def point(p):
     return np.array([p[0], p[1], 1.]).reshape(1, -1)
+
+def collinearity_check(p1, p2, p3, epsilon):
+    m = np.concatenate((p1, p2, p3), 0)
+    det = np.linalg.det(m)
+    return abs(det) < epsilon
 
 def shorten_path(path):
     waypoints = [p for p in path]  # makes a copy of the 'path' list
