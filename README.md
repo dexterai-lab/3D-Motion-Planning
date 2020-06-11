@@ -60,18 +60,13 @@ This step is to handle random grid goal locations. This is achieved by continual
 #### 5. Modify A* to include diagonal motion (or replace A* altogether)
 The diagonal motion is achieved by setting diagonal directions(NORTH_WEST,NORTH_EAST,SOUTH_WEST,SOUTH_EAST) by offsetting the cost of action in the tuple using numpy sqrt function in the Action class. 
 #### 6. Cull waypoints 
-For this step you can use a collinearity test or ray tracing method like Bresenham. The idea is simply to prune your path of unnecessary waypoints. Explain the code you used to accomplish this step.
+For this I used the ray tracing method with Bresenham algorithm. The idea is simply to prune the paths of unnecessary waypoints through free space.
 
 
 
 ### Execute the flight
 #### 1. Does it work?
-It works!
+It works great!
 
-### Double check that you've met specifications for each of the [rubric](https://review.udacity.com/#!/rubrics/1534/view) points.
-  
-# Extra Challenges: Real World Planning
-
-For an extra challenge, consider implementing some of the techniques described in the "Real World Planning" lesson. You could try implementing a vehicle model to take dynamic constraints into account, or implement a replanning method to invoke if you get off course or encounter unexpected obstacles.
 
 
